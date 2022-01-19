@@ -1,0 +1,95 @@
+2022-01-10 23:43:50 INFO     Model: osb-os-single-sa
+2022-01-10 23:43:50 INFO     Data Path: data/wn18rr
+2022-01-10 23:43:50 INFO     #entity: 40943
+2022-01-10 23:43:50 INFO     #relation: 11
+2022-01-10 23:43:51 INFO     #train: 86835
+2022-01-10 23:43:51 INFO     #valid: 3034
+2022-01-10 23:43:51 INFO     #test: 3134
+2022-01-10 23:43:51 INFO     Model Parameter Configuration:
+2022-01-10 23:43:51 INFO     Parameter gamma: torch.Size([1]), require_grad = False
+2022-01-10 23:43:51 INFO     Parameter embedding_range: torch.Size([1]), require_grad = False
+2022-01-10 23:43:51 INFO     Parameter gammas.weight: torch.Size([40943, 1]), require_grad = True
+2022-01-10 23:43:51 INFO     Parameter entity_embedding.weight: torch.Size([40943, 1000]), require_grad = True
+2022-01-10 23:43:51 INFO     Parameter relation_embedding.weight: torch.Size([11, 1000]), require_grad = True
+2022-01-10 23:43:51 INFO     Parameter relation_embedding_bi.weight: torch.Size([11, 2000]), require_grad = True
+2022-01-10 23:43:58 INFO     Ramdomly Initializing osb-os-single-sa Model...
+2022-01-10 23:43:58 INFO     Start Training...
+2022-01-10 23:43:58 INFO     init_step = 0
+2022-01-10 23:43:58 INFO     batch_size = 512
+2022-01-10 23:43:58 INFO     negative_adversarial_sampling = 512
+2022-01-10 23:43:58 INFO     hidden_dim = 500
+2022-01-10 23:43:58 INFO     gamma = 2.500000
+2022-01-10 23:43:58 INFO     negative_adversarial_sampling = True
+2022-01-10 23:43:58 INFO     adversarial_temperature = 1.500000
+2022-01-10 23:43:58 INFO     warm up steps = 30000
+2022-01-10 23:43:58 INFO     learning_rate = 0.000250
+2022-01-10 23:43:58 INFO     Training average positive_sample_loss at step 0: 0.576308
+2022-01-10 23:43:58 INFO     Training average negative_sample_loss at step 0: 0.827331
+2022-01-10 23:43:58 INFO     Training average loss at step 0: 0.701820
+2022-01-10 23:51:11 INFO     Training average positive_sample_loss at step 10000: 0.461888
+2022-01-10 23:51:11 INFO     Training average negative_sample_loss at step 10000: 0.216103
+2022-01-10 23:51:11 INFO     Training average loss at step 10000: 0.338995
+2022-01-10 23:51:11 INFO     Evaluating on test Dataset...
+2022-01-10 23:51:12 INFO     Evaluating the model... (0/196)
+2022-01-10 23:59:50 INFO     Training average positive_sample_loss at step 20000: 0.286648
+2022-01-10 23:59:50 INFO     Training average negative_sample_loss at step 20000: 0.081252
+2022-01-10 23:59:50 INFO     Training average loss at step 20000: 0.183950
+2022-01-10 23:59:50 INFO     Evaluating on test Dataset...
+2022-01-10 23:59:51 INFO     Evaluating the model... (0/196)
+2022-01-11 00:08:31 INFO     Change learning_rate to 0.000125 at step 30000
+2022-01-11 00:08:31 INFO     Training average positive_sample_loss at step 30000: 0.252069
+2022-01-11 00:08:31 INFO     Training average negative_sample_loss at step 30000: 0.074630
+2022-01-11 00:08:31 INFO     Training average loss at step 30000: 0.163349
+2022-01-11 00:08:31 INFO     Evaluating on test Dataset...
+2022-01-11 00:08:31 INFO     Evaluating the model... (0/196)
+2022-01-11 00:17:11 INFO     Training average positive_sample_loss at step 40000: 0.192453
+2022-01-11 00:17:11 INFO     Training average negative_sample_loss at step 40000: 0.064602
+2022-01-11 00:17:11 INFO     Training average loss at step 40000: 0.128528
+2022-01-11 00:17:11 INFO     Evaluating on test Dataset...
+2022-01-11 00:17:12 INFO     Evaluating the model... (0/196)
+2022-01-11 00:25:51 INFO     Change learning_rate to 0.000063 at step 50000
+2022-01-11 00:25:51 INFO     Training average positive_sample_loss at step 50000: 0.179972
+2022-01-11 00:25:51 INFO     Training average negative_sample_loss at step 50000: 0.061096
+2022-01-11 00:25:51 INFO     Training average loss at step 50000: 0.120534
+2022-01-11 00:25:51 INFO     Evaluating on test Dataset...
+2022-01-11 00:25:52 INFO     Evaluating the model... (0/196)
+2022-01-11 00:34:29 INFO     Training average positive_sample_loss at step 60000: 0.156813
+2022-01-11 00:34:29 INFO     Training average negative_sample_loss at step 60000: 0.056395
+2022-01-11 00:34:29 INFO     Training average loss at step 60000: 0.106604
+2022-01-11 00:34:29 INFO     Evaluating on test Dataset...
+2022-01-11 00:34:30 INFO     Evaluating the model... (0/196)
+2022-01-11 00:43:11 INFO     Change learning_rate to 0.000031 at step 70000
+2022-01-11 00:43:11 INFO     Training average positive_sample_loss at step 70000: 0.151804
+2022-01-11 00:43:11 INFO     Training average negative_sample_loss at step 70000: 0.054545
+2022-01-11 00:43:11 INFO     Training average loss at step 70000: 0.103174
+2022-01-11 00:43:11 INFO     Evaluating on test Dataset...
+2022-01-11 00:43:12 INFO     Evaluating the model... (0/196)
+2022-01-11 00:51:51 INFO     Training average positive_sample_loss at step 80000: 0.141416
+2022-01-11 00:51:51 INFO     Training average negative_sample_loss at step 80000: 0.052375
+2022-01-11 00:51:51 INFO     Training average loss at step 80000: 0.096895
+2022-01-11 00:51:51 INFO     Evaluating on test Dataset...
+2022-01-11 00:51:52 INFO     Evaluating the model... (0/196)
+2022-01-11 01:00:30 INFO     Change learning_rate to 0.000016 at step 90000
+2022-01-11 01:00:30 INFO     Training average positive_sample_loss at step 90000: 0.139072
+2022-01-11 01:00:30 INFO     Training average negative_sample_loss at step 90000: 0.051534
+2022-01-11 01:00:30 INFO     Training average loss at step 90000: 0.095303
+2022-01-11 01:00:30 INFO     Evaluating on test Dataset...
+2022-01-11 01:00:31 INFO     Evaluating the model... (0/196)
+2022-01-11 01:09:09 INFO     Training average positive_sample_loss at step 100000: 0.134150
+2022-01-11 01:09:09 INFO     Training average negative_sample_loss at step 100000: 0.050501
+2022-01-11 01:09:09 INFO     Training average loss at step 100000: 0.092326
+2022-01-11 01:09:10 INFO     Evaluating on test Dataset...
+2022-01-11 01:09:10 INFO     Evaluating the model... (0/196)
+2022-01-11 01:17:51 INFO     Change learning_rate to 0.000008 at step 110000
+2022-01-11 01:17:51 INFO     Training average positive_sample_loss at step 110000: 0.132960
+2022-01-11 01:17:51 INFO     Training average negative_sample_loss at step 110000: 0.050107
+2022-01-11 01:17:51 INFO     Training average loss at step 110000: 0.091534
+2022-01-11 01:17:51 INFO     Evaluating on test Dataset...
+2022-01-11 01:17:51 INFO     Evaluating the model... (0/196)
+2022-01-11 01:26:31 INFO     Evaluating on Test Dataset...
+2022-01-11 01:26:32 INFO     Evaluating the model... (0/196)
+2022-01-11 01:27:58 INFO     Test MRR at step 119999: 0.450181
+2022-01-11 01:27:58 INFO     Test MR at step 119999: 4496.904116
+2022-01-11 01:27:58 INFO     Test HITS@1 at step 119999: 0.397096
+2022-01-11 01:27:58 INFO     Test HITS@3 at step 119999: 0.474633
+2022-01-11 01:27:58 INFO     Test HITS@10 at step 119999: 0.552010
