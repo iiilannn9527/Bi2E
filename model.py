@@ -42,35 +42,9 @@ class KGEModel(nn.Module):
         nn.init.uniform_(tensor=self.entity_embedding.weight, a=-self.embedding_range.item(), b=self.embedding_range.item())
         self.relation_embedding = nn.Embedding(nrelation, hidden_dim * 2)
         nn.init.uniform_(tensor=self.relation_embedding.weight, a=-self.embedding_range.item(), b=self.embedding_range.item())
-        # self.entity_embedding_rota = nn.Embedding(nentity, hidden_dim * 6)
-        # nn.init.uniform_(tensor=self.entity_embedding_rota.weight, a=-self.embedding_range.item(), b=self.embedding_range.item())
         self.relation_embedding_bi = nn.Embedding(nrelation, hidden_dim * 4)
         nn.init.uniform_(tensor=self.relation_embedding_bi.weight, a=-self.embedding_range.item(), b=self.embedding_range.item())
-        # self.entity_location = nn.Embedding(nentity, self.hidden_dim)
-        # nn.init.uniform_(tensor=self.entity_location.weight, a=0., b=2.)
-        # self.er_fc = nn.Sequential(
-        #     nn.Linear(hidden_dim * 2, hidden_dim),
-        #     # nn.ReLU(),
-        #     # nn.Linear(hidden_dim * 8, hidden_dim)
-        # )
-        # self.er_fc_1 = nn.Sequential(
-        #     nn.Linear(hidden_dim * 2, hidden_dim),
-        #     # nn.ReLU(),
-        #     # nn.Linear(hidden_dim * 8, hidden_dim)
-        # )
-        # self.os_fc_1 = nn.Sequential(
-        #     nn.Linear(hidden_dim, hidden_dim * 4),
-        #     nn.GELU(),
-        #     nn.Linear(hidden_dim * 4, hidden_dim)
-        # )
-        # self.os_fc_2 = nn.Sequential(
-        #     nn.Linear(hidden_dim, hidden_dim * 4),
-        #     nn.GELU(),
-        #     nn.Linear(hidden_dim * 4, hidden_dim)
-        # )
-
-        # self.alfa = nn.Parameter(torch.Tensor([0.001 * gamma / hidden_dim]), requires_grad=True)
-        # self.alfas = nn.Embedding()
+        
         """if model_name == 'pRotatE':
             self.modulus = nn.Parameter(torch.Tensor([[0.5 * self.embedding_range.item()]]))
 
@@ -103,24 +77,7 @@ class KGEModel(nn.Module):
             relation_id = sample[:, 1]
             head = sample[:, 0]
             tail = sample[:, 2]
-
-            # head = torch.index_select(
-            #     self.entity_embedding,
-            #     dim=0,
-            #     index=sample[:, 0]
-            # ).unsqueeze(1)
-            #
-            # relation = torch.index_select(
-            #     self.relation_embedding,
-            #     dim=0,
-            #     index=sample[:, 1]
-            # ).unsqueeze(1)
-            #
-            # tail = torch.index_select(
-            #     self.entity_embedding,
-            #     dim=0,
-            #     index=sample[:, 2]
-            # ).unsqueeze(1)
+            
         elif mode == 'head-batch':
             tail_part, head_part = sample
             batch_size, negative_sample_size = head_part.size(0), head_part.size(1)
@@ -129,23 +86,6 @@ class KGEModel(nn.Module):
             head = head_part.view(-1)
             tail = tail_part[:, 2]
 
-            # head = torch.index_select(
-            #     self.entity_embedding,
-            #     dim=0,
-            #     index=head_part.view(-1)
-            # ).view(batch_size, negative_sample_size, -1)
-            #
-            # relation = torch.index_select(
-            #     self.relation_embedding,
-            #     dim=0,
-            #     index=tail_part[:, 1]
-            # ).unsqueeze(1)
-            #
-            # tail = torch.index_select(
-            #     self.entity_embedding,
-            #     dim=0,
-            #     index=tail_part[:, 2]
-            # ).unsqueeze(1)
         elif mode == 'tail-batch':
             # positive, negative
             head_part, tail_part = sample
@@ -153,39 +93,13 @@ class KGEModel(nn.Module):
             relation_id = head_part[:, 1]
             head = head_part[:, 0]
             tail = tail_part.view(-1)
-            # batch_size, negative_sample_size = tail_part.size(0), tail_part.size(1)
-            #
-            # # 嵌入
-            # head = torch.index_select(self.entity_embedding, dim=0, index=head_part[:, 0]).unsqueeze(1)
-            # relation = torch.index_select(self.relation_embedding, dim=0, index=head_part[:, 1]).unsqueeze(1)
-            # tail = torch.index_select(self.entity_embedding, dim=0, index=tail_part.view(-1)).view(batch_size,
-            #                                                                                        negative_sample_size,
-            #                                                                                        -1)
+                                                                                                -1)
         else:
             raise ValueError('mode %s not supported' % mode)
         model_func = {
-            'osb-os': self.os_Rota_bi_os,
-            'osb-os-sa': self.os_Rota_bi_os_sa,
-            'os-rota-bi-osb-os-sa': self.os_Rota_bi_sa,
-            'os-rota-bi-for': self.os_Rota_bi_for,
-            'os-rota-bi-rota': self.os_Rota_bi_rota,
-            'os-rota-bi': self.os_Rota_bi,
-            'os-rota-bi-saf': self.os_Rota_bi_saf,
-            # 'os-rota': self.os_Rota,
-            # 'os-pair': self.os_Pair,
-            # 'os-pair-1': self.os_Pair_1,
-            # 'os-pair-2': self.os_Pair_2,
-            # 'pair': self.PairRE,
-            # 'rota': self.Rota,
-            # 'single': self.single_middle,
-            # 'bi': self.bi_middle,
-            # 'single+Rota': self.smr,
-            # 'bi-Rota': self.bmr,
-            # 'adapt-bi': self.adapt_bi,
-            # 'adapt-rota': self.adapt_rota,
-            # 'exp': self.exp,
-            # 'bi-1': self.bi_middle_1,
-            # 'bi-2': self.bi_middle_2
+            'bi2e': self.Bi2E,
+            'pair': self.PairRE,
+            'rota': self.Rota,
         }
         if self.model_name in model_func:
             score = model_func[self.model_name](head, relation_id, tail, mode)
@@ -194,29 +108,8 @@ class KGEModel(nn.Module):
 
         return score
 
-    def os_Rota_bi_os(self, head, relation, tail, mode):
-        head = head.view(relation.size(0), -1)
-        tail = tail.view(relation.size(0), -1)
-        e1 = self.entity_embedding(head)
-        e2 = self.entity_embedding(tail)
-        relation = self.relation_embedding_bi(relation).unsqueeze(1)
-        ro, rs, rro, rrs = torch.chunk(relation, 4, -1)
-        e1_o, e1_s = torch.chunk(e1, 2, -1)
-        e2_o, e2_s = torch.chunk(e2, 2, -1)
-
-        score_o = e1_o * ro - e2_o
-        score_s = e1_s * rs - e2_s
-        score_o = self.gamma.item() - torch.norm(score_o, 1, -1)
-        score_s = self.gamma.item() - torch.norm(score_s, 1, -1)
-
-        score_o1 = e2_o * rro - e1_o
-        score_s1 = e2_s * rrs - e1_s
-        score_o1 = self.gamma.item() - torch.norm(score_o1, 1, -1)
-        score_s1 = self.gamma.item() - torch.norm(score_s1, 1, -1)
-
-        return (score_o + score_s + score_o1 + score_s1) / 4
-
-    def os_Rota_bi_os_sa(self, head, relation, tail, mode):
+    
+    def Bi2E(self, head, relation, tail, mode):
         head = head.view(relation.size(0), -1)
         tail = tail.view(relation.size(0), -1)
         e1 = self.entity_embedding(head)
@@ -239,447 +132,36 @@ class KGEModel(nn.Module):
         score_s1 = gamma_tail - torch.norm(score_s1, 1, -1)
 
         return (score_o + score_s + score_o1 + score_s1) / 4
-
-    def os_Rota(self, head, relation, tail, mode):
+   
+    
+    def PairRE(self, head, relation, tail, mode):
+        head = head.view(relation.size(0), -1)
+        tail = tail.view(relation.size(0), -1)
+        e1 = self.entity_embedding(head)
+        e2 = self.entity_embedding(tail)
+        relation = self.relation_embedding(relation).unsqueeze(1)
+        r1, r2 = torch.chunk(relation, 2, -1)
+    
+        e1 = F.normalize(e1, 2, -1)
+        e2 = F.normalize(e2, 2, -1)
+    
+        score = e1 * r1 - e2 * r2
+        score = self.gamma.item() - torch.norm(score, 1, -1)
+    
+        return score
+    
+   
+    def Rota(self, head, relation, tail, mode):
         head = head.view(relation.size(0), -1)
         tail = tail.view(relation.size(0), -1)
         e1 = self.entity_embedding_rota(head)
         e2 = self.entity_embedding_rota(tail)
         relation = self.relation_embedding(relation).unsqueeze(1)
-        ro, rs = torch.chunk(relation, 2, -1)
-        e1, e1_o, e1_s = torch.chunk(e1, 3, -1)
-        e2, e2_o, e2_s = torch.chunk(e2, 3, -1)
-
-        score_o = e1 * e1_o * ro - e2 * e2_o
-        score_s = e1 * e1_s * rs - e2 * e2_s
-
-        score_o = self.gamma.item() - torch.norm(score_o, 1, -1)
-        score_s = self.gamma.item() - torch.norm(score_s, 1, -1)
-
-        return score_o / 2 + score_s / 2
-
-    def os_Rota_bi(self, head, relation, tail, mode):
-        head = head.view(relation.size(0), -1)
-        tail = tail.view(relation.size(0), -1)
-        e1 = self.entity_embedding(head)
-        e2 = self.entity_embedding(tail)
-        relation = self.relation_embedding_bi(relation).unsqueeze(1)
-        ro, rs, rro, rrs = torch.chunk(relation, 4, -1)
-        e1, e1_o, e1_s = torch.chunk(e1, 3, -1)
-        e2, e2_o, e2_s = torch.chunk(e2, 3, -1)
-
-        score_o = e1 * e1_o * ro - e2 * e2_o
-        score_s = e1 * e1_s * rs - e2 * e2_s
-        score_o = self.gamma.item() - torch.norm(score_o, 1, -1)
-        score_s = self.gamma.item() - torch.norm(score_s, 1, -1)
-
-        score_o1 = e2 * e2_o * rro - e1 * e1_o
-        score_s1 = e2 * e2_s * rrs - e1 * e1_s
-        score_o1 = self.gamma.item() - torch.norm(score_o1, 1, -1)
-        score_s1 = self.gamma.item() - torch.norm(score_s1, 1, -1)
-
-        return (score_o + score_s + score_o1 + score_s1) / 4
-
-    def os_Rota_bi_for(self, head, relation, tail, mode):
-        head = head.view(relation.size(0), -1)
-        tail = tail.view(relation.size(0), -1)
-        e1 = self.entity_embedding(head)
-        e2 = self.entity_embedding(tail)
-        relation = self.relation_embedding_bi(relation).unsqueeze(1)
-        ro, rs, rro, rrs = torch.chunk(relation, 4, -1)
-        e1, e1_o, e1_s = torch.chunk(e1, 3, -1)
-        e2, e2_o, e2_s = torch.chunk(e2, 3, -1)
-
-        e1 = F.normalize(e1, 2, -1)
-        e2 = F.normalize(e2, 2, -1)
-
-        score_o = e1 * e1_o * ro - e2 * e2_o
-        score_s = e1 * e1_s * rs - e2 * e2_s
-        score_o = self.gamma.item() - torch.norm(score_o, 1, -1)
-        score_s = self.gamma.item() - torch.norm(score_s, 1, -1)
-
-        score_o1 = e2 * e2_o * rro - e1 * e1_o
-        score_s1 = e2 * e2_s * rrs - e1 * e1_s
-        score_o1 = self.gamma.item() - torch.norm(score_o1, 1, -1)
-        score_s1 = self.gamma.item() - torch.norm(score_s1, 1, -1)
-
-        return (score_o + score_s + score_o1 + score_s1) / 4
-
-    def os_Rota_bi_rota(self, head, relation, tail, mode):
-        head = head.view(relation.size(0), -1)
-        tail = tail.view(relation.size(0), -1)
-        e1 = self.entity_embedding_rota(head)
-        e2 = self.entity_embedding_rota(tail)
-        relation = self.relation_embedding_bi(relation).unsqueeze(1)
-        ro, rs, rro, rrs = torch.chunk(relation, 4, -1)
-        e1, e1_o, e1_s = torch.chunk(e1, 3, -1)
-        e2, e2_o, e2_s = torch.chunk(e2, 3, -1)
-
-        score_o = self.RotatE(e1 * e1_o, ro, e2 * e2_o, mode)
-        score_s = self.RotatE(e1 * e1_s, rs, e2 * e2_s, mode)
-        # score_o = e1 * e1_o * ro - e2 * e2_o
-        # score_s = e1 * e1_s * rs - e2 * e2_s
-        # score_o = self.gamma.item() - torch.norm(score_o, 1, -1)
-        # score_s = self.gamma.item() - torch.norm(score_s, 1, -1)
-
-        score_o1 = self.RotatE(e2 * e2_o, rro, e1 * e1_o, mode)
-        score_s1 = self.RotatE(e2 * e2_s, rrs, e1 * e1_s, mode)
-        # score_o1 = e2 * e2_o * rro - e1 * e1_o
-        # score_s1 = e2 * e2_s * rrs - e1 * e1_s
-        # score_o1 = self.gamma.item() - torch.norm(score_o1, 1, -1)
-        # score_s1 = self.gamma.item() - torch.norm(score_s1, 1, -1)
-
-        return (score_o + score_s + score_o1 + score_s1) / 4
-
-    def os_Rota_bi_sa(self, head, relation, tail, mode):
-        head = head.view(relation.size(0), -1)
-        tail = tail.view(relation.size(0), -1)
-        e1 = self.entity_embedding(head)
-        e2 = self.entity_embedding(tail)
-        relation = self.relation_embedding_bi(relation).unsqueeze(1)
-        ro, rs, rro, rrs = torch.chunk(relation, 4, -1)
-        e1, e1_o, e1_s = torch.chunk(e1, 3, -1)
-        e2, e2_o, e2_s = torch.chunk(e2, 3, -1)
-        gamma_head = self.gammas(head).squeeze(-1)
-        gamma_tail = self.gammas(tail).squeeze(-1)
-
-        score_o = e1 * e1_o * ro - e2 * e2_o
-        score_s = e1 * e1_s * rs - e2 * e2_s
-        score_o = gamma_head - torch.norm(score_o, 1, -1)
-        score_s = gamma_head - torch.norm(score_s, 1, -1)
-
-        score_o1 = e2 * e2_o * rro - e1 * e1_o
-        score_s1 = e2 * e2_s * rrs - e1 * e1_s
-        score_o1 = gamma_tail - torch.norm(score_o1, 1, -1)
-        score_s1 = gamma_tail - torch.norm(score_s1, 1, -1)
-
-        return (score_o + score_s + score_o1 + score_s1) / 4
-
-    def os_Rota_bi_saf(self, head, relation, tail, mode):
-        head = head.view(relation.size(0), -1)
-        tail = tail.view(relation.size(0), -1)
-        e1 = self.entity_embedding(head)
-        e2 = self.entity_embedding(tail)
-        relation = self.relation_embedding_bi(relation).unsqueeze(1)
-        ro, rs, rro, rrs = torch.chunk(relation, 4, -1)
-        e1, e1_o, e1_s = torch.chunk(e1, 3, -1)
-        e2, e2_o, e2_s = torch.chunk(e2, 3, -1)
-        gamma_head = self.gammas(head).squeeze(-1)
-        gamma_tail = self.gammas(tail).squeeze(-1)
-        e1 = F.normalize(e1, 2, -1)
-        e2 = F.normalize(e2, 2, -1)
-
-        score_o = e1 * e1_o * ro - e2 * e2_o
-        score_s = e1 * e1_s * rs - e2 * e2_s
-        score_o = gamma_head - torch.norm(score_o, 1, -1)
-        score_s = gamma_head - torch.norm(score_s, 1, -1)
-
-        score_o1 = e2 * e2_o * rro - e1 * e1_o
-        score_s1 = e2 * e2_s * rrs - e1 * e1_s
-        score_o1 = gamma_tail - torch.norm(score_o1, 1, -1)
-        score_s1 = gamma_tail - torch.norm(score_s1, 1, -1)
-
-        return (score_o + score_s + score_o1 + score_s1) / 4
-
-    # def os_Pair(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     relation = self.relation_embedding_bi(relation).unsqueeze(1)
-    #     ro1, ro2, rs1, rs2 = torch.chunk(relation, 4, -1)
-    #
-    #     e1 = F.normalize(e1, 2, -1)
-    #     e2 = F.normalize(e2, 2, -1)
-    #     # 1
-    #     score_1 = e1 * ro1 - e2 * rs1
-    #     score_2 = e1 * ro2 - e2 * rs2
-    #     score_3 = e1 * (ro1 + ro2) - e2 * (rs1 + rs2)
-    #
-    #     score_1 = self.gamma.item() - torch.norm(score_1, 1, -1)
-    #     score_2 = self.gamma.item() - torch.norm(score_2, 1, -1)
-    #     score_3 = self.gamma.item() - torch.norm(score_3, 1, -1)
-    #
-    #     return (score_1 + score_2 + score_3) / 3
-    #
-    # def os_Pair_1(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     relation = self.relation_embedding_bi(relation).unsqueeze(1)
-    #     ro1, ro2, rs1, rs2 = torch.chunk(relation, 4, -1)
-    #
-    #     e1 = F.normalize(e1, 2, -1)
-    #     e2 = F.normalize(e2, 2, -1)
-    #     # 1
-    #     score_1 = e1 * ro1 - e2 * rs1
-    #     score_2 = e1 * ro2 - e2 * rs2
-    #     # score_3 = e1 * (ro1 + ro2) - e2 * (rs1 + rs2)
-    #
-    #     score_1 = self.gamma.item() - torch.norm(score_1, 1, -1)
-    #     score_2 = self.gamma.item() - torch.norm(score_2, 1, -1)
-    #     # score_3 = self.gamma.item() - torch.norm(score_3, 1, -1)
-    #
-    #     return (score_1 + score_2) / 2
-    #
-    # def os_Pair_2(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     relation = self.relation_embedding_bi(relation).unsqueeze(1)
-    #     ro1, ro2, rs1, rs2 = torch.chunk(relation, 4, -1)
-    #
-    #     e1 = F.normalize(e1, 2, -1)
-    #     e2 = F.normalize(e2, 2, -1)
-    #
-    #     # 1
-    #     score_1 = self.os_fc_1(e1) * self.os_fc_1(ro1) - self.os_fc_1(e2) * self.os_fc_1(rs1)
-    #     score_2 = self.os_fc_2(e1) * self.os_fc_2(ro2) - self.os_fc_2(e2) * self.os_fc_2(rs2)
-    #     # score_3 = e1 * (ro1 + ro2) - e2 * (rs1 + rs2)
-    #
-    #     score_1 = self.gamma.item() - torch.norm(score_1, 1, -1)
-    #     score_2 = self.gamma.item() - torch.norm(score_2, 1, -1)
-    #     # score_3 = self.gamma.item() - torch.norm(score_3, 1, -1)
-    #
-    #     return (score_1 + score_2) / 2
-    #
-    # def PairRE(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     relation = self.relation_embedding(relation).unsqueeze(1)
-    #     r1, r2 = torch.chunk(relation, 2, -1)
-    #
-    #     e1 = F.normalize(e1, 2, -1)
-    #     e2 = F.normalize(e2, 2, -1)
-    #
-    #     score = e1 * r1 - e2 * r2
-    #     score = self.gamma.item() - torch.norm(score, 1, -1)
-    #
-    #     return score
-    #
-    # def bmr(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding_rota(head)
-    #     e2 = self.entity_embedding_rota(tail)
-    #     relation = self.relation_embedding_bi(relation).unsqueeze(1)
-    #     r1, r2, r3, r4 = torch.chunk(relation, 4, -1)
-    #
-    #     # score = e1 * r1 - (e2 - self.alfa)
-    #     # score = self.gamma.item() - torch.norm(score, 1, -1)
-    #     # score1 = e1 * r2 - (e2 + self.alfa)
-    #     # score1 = self.gamma.item() - torch.norm(score1, 1, -1)
-    #     #
-    #     # score_1 = e2 * r3 - (e1 - self.alfa)
-    #     # score_1 = self.gamma.item() - torch.norm(score_1, 1, -1)
-    #     # score_2 = e2 * r4 - (e1 + self.alfa)
-    #     # score_2 = self.gamma.item() - torch.norm(score_2, 1, -1)
-    #     score = self.RotatE(e1, r1, e2 - self.alfa, mode)
-    #     score1 = self.RotatE(e1, r2, e2 + self.alfa, mode)
-    #
-    #     score_1 = self.RotatE(e2, r3, e1 - self.alfa, mode)
-    #     score_2 = self.RotatE(e2, r4, e1 + self.alfa, mode)
-    #
-    #     return (score + score1 + score_1 + score_2) / 4
-    #
-    # def smr(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding_rota(head)
-    #     e2 = self.entity_embedding_rota(tail)
-    #     relation = self.relation_embedding(relation).unsqueeze(1)
-    #     r1, r2 = torch.chunk(relation, 2, -1)
-    #
-    #     # score = e1 * r1 - (e2 - self.alfa)
-    #     # score = self.gamma.item() - torch.norm(score, 1, -1)
-    #     # score1 = e1 * r2 - (e2 + self.alfa)
-    #     # score1 = self.gamma.item() - torch.norm(score1, 1, -1)
-    #
-    #     score = self.RotatE(e1, r1, e2 - self.alfa, mode)
-    #     score1 = self.RotatE(e1, r2, e2 + self.alfa, mode)
-    #
-    #     return (score + score1) / 2
-    #
-    # def bi_middle(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     relation = self.relation_embedding_bi(relation).unsqueeze(1)
-    #     r1, r2, r3, r4 = torch.chunk(relation, 4, -1)
-    #
-    #     score = e1 * r1 - (e2 - self.alfa)
-    #     score = self.gamma.item() - torch.norm(score, 1, -1)
-    #     score1 = e1 * r2 - (e2 + self.alfa)
-    #     score1 = self.gamma.item() - torch.norm(score1, 1, -1)
-    #
-    #     score_1 = e2 * r3 - (e1 - self.alfa)
-    #     score_1 = self.gamma.item() - torch.norm(score_1, 1, -1)
-    #     score_2 = e2 * r4 - (e1 + self.alfa)
-    #     score_2 = self.gamma.item() - torch.norm(score_2, 1, -1)
-    #     # score1 = e1 * r1 - e2
-    #     # score1 = self.gamma.item() - torch.norm(score1, 1, -1)
-    #     # # score2 = e2 * r2 - e1
-    #     # # score2 = self.gamma.item() - torch.norm(score2, 1, -1)
-    #
-    #     return (score + score1 + score_1 + score_2) / 4
-    #
-    # def bi_middle_1(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     relation = self.relation_embedding_bi(relation).unsqueeze(1)
-    #     r1, r2, r3, r4 = torch.chunk(relation, 4, -1)
-    #
-    #     score_1 = e1 * (r1 + r2) / 2 - e2
-    #     score_1 = self.gamma.item() - torch.norm(score_1, 1, -1)
-    #
-    #     score_2 = e2 * (r3 + r4) / 2 - e1
-    #     score_2 = self.gamma.item() - torch.norm(score_2, 1, -1)
-    #
-    #     return (score_1 + score_2) / 2
-    #
-    # def bi_middle_2(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     relation = self.relation_embedding_bi(relation).unsqueeze(1)
-    #     r1, r2, r3, r4 = torch.chunk(relation, 4, -1)
-    #
-    #     score_1 = e1 * (r1 + r2) - e2
-    #     score_1 = self.gamma.item() - torch.norm(score_1, 1, -1)
-    #
-    #     score_2 = e2 * (r3 + r4) - e1
-    #     score_2 = self.gamma.item() - torch.norm(score_2, 1, -1)
-    #
-    #     return (score_1 + score_2) / 2
-    #
-    # def single_middle(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     relation = self.relation_embedding(relation).unsqueeze(1)
-    #     r1, r2 = torch.chunk(relation, 2, -1)
-    #
-    #     score = e1 * r1 - (e2 - self.alfa)
-    #     score = self.gamma.item() - torch.norm(score, 1, -1)
-    #     score1 = e1 * r2 - (e2 + self.alfa)
-    #     score1 = self.gamma.item() - torch.norm(score1, 1, -1)
-    #
-    #     return (score + score1) / 2
-    #
-    # def er2e(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     relation = self.relation_embedding(relation).unsqueeze(1)
-    #     r1, r2 = torch.chunk(relation, 2, -1)
-    #
-    #     score1 = (e1 * r1 + e1 * r2) / 2 - e2
-    #     score1 = self.gamma.item() - torch.norm(score1, 1, -1)
-    #     # score2 = e2 * r2 - e1
-    #     # score2 = self.gamma.item() - torch.norm(score2, 1, -1)
-    #
-    #     # score = score1 / 2 + score2 / 2
-    #
-    #     return score1
-    #
-    # def adapt_bi(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     r = self.relation_embedding(relation).unsqueeze(1)
-    #     r1, r2 = torch.chunk(r, 2, -1)
-    #
-    #     # gamma = torch.index_select(self.gammas, dim=0, index=relation).unsqueeze(-1)
-    #
-    #     max_dim1 = max(e1.size(1), r1.size(1))
-    #     if max_dim1 != 1:
-    #         # e1 = e1.repeat(1, max_dim1//e1.size(1), 1)
-    #         r1 = r1.repeat(1, max_dim1//r1.size(1), 1)
-    #     er = torch.cat([e1, r1], dim=-1)
-    #     er = self.er_fc(er)
-    #     score = e1 * er - e2
-    #     # score_in = torch.abs(score)
-    #     # score_in = F.softmax(score_in * 1.0, dim=-1).detach() * score.size(-1)
-    #     # score = score * score_in
-    #     score = self.gamma.item() - torch.norm(score, 1, -1)
-    #
-    #     max_dim2 = max(e2.size(1), r2.size(1))
-    #     if max_dim2 != 1:
-    #         # e2 = e2.repeat(1, max_dim2 // e2.size(1), 1)
-    #         r2 = r2.repeat(1, max_dim2 // r2.size(1), 1)
-    #     er1 = torch.cat([e2, r2], dim=-1)
-    #     er1 = self.er_fc_1(er1)
-    #     score1 = e2 * er1 - e1
-    #     # score_in_1 = torch.abs(score1)
-    #     # score_in_1 = F.softmax(score_in_1 * 1.0, dim=-1).detach() * score1.size(-1)
-    #     # score1 = score1 * score_in_1
-    #     score1 = self.gamma.item() - torch.norm(score1, 1, -1)
-    #
-    #     return score / 2 + score1 / 2
-    #
-    # def adapt_rota(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding_rota(head)
-    #     e2 = self.entity_embedding_rota(tail)
-    #     r = self.relation_embedding(relation).unsqueeze(1)
-    #     r1, r2 = torch.chunk(r, 2, -1)
-    #
-    #     max_dim1 = max(e1.size(1), r1.size(1))
-    #     if max_dim1 != 1:
-    #         # e1 = e1.repeat(1, max_dim1//e1.size(1), 1)
-    #         r1 = r1.repeat(1, max_dim1//r1.size(1), 1)
-    #     er = torch.cat([e1, r1], dim=-1)
-    #     er = self.er_fc(er)
-    #     # score = e1 * er - e2
-    #     score = self.RotatE(e1, er, e2, mode)
-    #
-    #     max_dim2 = max(e2.size(1), r2.size(1))
-    #     if max_dim2 != 1:
-    #         # e2 = e2.repeat(1, max_dim2 // e2.size(1), 1)
-    #         r2 = r2.repeat(1, max_dim2 // r2.size(1), 1)
-    #     er1 = torch.cat([e2, r2], dim=-1)
-    #     er1 = self.er_fc_1(er1)
-    #     # score1 = e2 * er1 - e1
-    #     score1 = self.RotatE(e2, er1, e1, mode)
-    #
-    #     return score / 2 + score1 / 2
-    #
-    # def exp(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding(head)
-    #     e2 = self.entity_embedding(tail)
-    #     relation = self.relation_embedding(relation).unsqueeze(1)
-    #     r1, r2 = torch.chunk(relation, 2, -1)
-    #
-    #     score = torch.pow(torch.exp(e1), r1) - torch.pow(torch.exp(e2), r2)
-    #     score = self.gamma.item() - torch.norm(score, 1, -1)
-    #
-    #     return score
-    #
-    # def Rota(self, head, relation, tail, mode):
-    #     head = head.view(relation.size(0), -1)
-    #     tail = tail.view(relation.size(0), -1)
-    #     e1 = self.entity_embedding_rota(head)
-    #     e2 = self.entity_embedding_rota(tail)
-    #     relation = self.relation_embedding(relation).unsqueeze(1)
-    #     r1, _ = torch.chunk(relation, 2, -1)
-    #
-    #     score = self.RotatE(e1, r1, e2, mode)
-    #
-    #     return score
+        r1, _ = torch.chunk(relation, 2, -1)
+    
+        score = self.RotatE(e1, r1, e2, mode)
+    
+        return score
 
     def RotatE(self, head, relation, tail, mode):
         pi = 3.14159265358979323846
