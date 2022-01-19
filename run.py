@@ -12,7 +12,7 @@ import random
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
-from model3 import KGEModel
+from model import KGEModel
 from dataloader import TrainDataset
 from dataloader import BidirectionalOneShotIterator
 from dataloader import BidirectionalOneShotIterator_1
