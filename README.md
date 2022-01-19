@@ -4,11 +4,11 @@ Code for paper [Bi2E: Bidirectional Knowledge Graph Embeddings Based on Subject-
 
 ## Setup
 These experiments are based on [RotatE](https://github.com/DeepGraphLearning/KnowledgeGraphEmbedding).
+Adjust the model's hyperparameters by setting arguments.py and run in run.py
 <!-- To run the code, you need the following dependencies:
 - [Pytorch 1.6.0](https://pytorch.org/) -->
 ## Results
 The results of **Bi2E** on **WN18RR**, **YAGO3-10** and **FB15k-237** are as follows.
-### WN18RR
 | | MR| MRR| Hits@1| Hits@3| Hits@10|
 |:------:|:------:|:------:|:------:|:--------:|:--------:|
 | WN18RR | 2798 | 0.480 | 0.432 | 0.498 | 0.574 | 
