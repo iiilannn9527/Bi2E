@@ -12,7 +12,7 @@ import random
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
-from model3 import KGEModel
+from model import KGEModel
 from dataloader import TrainDataset
 from dataloader import BidirectionalOneShotIterator
 from dataloader import BidirectionalOneShotIterator_1
@@ -23,7 +23,6 @@ INDEX = '1'
 ARG = ARGUMENT[f'arg_{INDEX}']
 DATASET = 'wn18rr'
 MODEL = 'osb-os-sa'
-INTRO = '500,2.5,1.5,512,512,repeat11'
 
 
 def parse_args(args=None):
@@ -102,30 +101,7 @@ def save_model(model, optimizer, save_variable_list, args):
     Save the parameters of the model and the optimizer,
     as well as some other variables such as step and learning_rate
     '''
-
-    # argparse_dict = vars(args)
-    # with open(os.path.join(args.save_path, 'config.json'), 'w') as fjson:
-    #     json.dump(argparse_dict, fjson)
-    #
-    # torch.save({
-    #     **save_variable_list,
-    #     'model_state_dict': model.state_dict(),
-    #     'optimizer_state_dict': optimizer.state_dict()},
-    #     os.path.join(args.save_path, 'checkpoint')
-    # )
-    #
-    # entity_embedding = model.entity_embedding.detach().cpu().numpy()
-    # np.save(
-    #     os.path.join(args.save_path, 'entity_embedding'),
-    #     entity_embedding
-    # )
-    #
-    # relation_embedding = model.relation_embedding.detach().cpu().numpy()
-    # np.save(
-    #     os.path.join(args.save_path, 'relation_embedding'),
-    #     relation_embedding
-    # )
-
+    
 
 def read_triple(file_path, entity2id, relation2id):
     '''
@@ -176,8 +152,7 @@ def log_metrics(mode, step, metrics):
 if __name__ == '__main__':
     torch.cuda.set_device(2)
     args = parse_args()
-    writer = SummaryWriter(f'log/{args.dataset}/{args.model}/ARG-{INDEX} {INTRO}')
-
+   
     if True:
         if (not args.do_train) and (not args.do_valid) and (not args.do_test):
             raise ValueError('one of train/val/test mode must be choosed.')
