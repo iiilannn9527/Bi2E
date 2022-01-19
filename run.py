@@ -22,8 +22,8 @@ from arguments import ARGUMENT
 INDEX = '1'
 ARG = ARGUMENT[f'arg_{INDEX}']
 DATASET = 'wn18rr'
-MODEL = 'osb-os-sa'
-INTRO = '500,2.5,1.5,512,512,repeat11'
+MODEL = 'bi2e'
+# INTRO = '500,2.5,1.5,512,512,repeat11'
 
 
 def parse_args(args=None):
@@ -176,7 +176,7 @@ def log_metrics(mode, step, metrics):
 if __name__ == '__main__':
     torch.cuda.set_device(2)
     args = parse_args()
-    writer = SummaryWriter(f'log/{args.dataset}/{args.model}/ARG-{INDEX} {INTRO}')
+    writer = SummaryWriter(f'log/{args.dataset}/{args.model}/ARG-{INDEX}')
 
     if True:
         if (not args.do_train) and (not args.do_valid) and (not args.do_test):
