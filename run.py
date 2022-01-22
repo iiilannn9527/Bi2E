@@ -174,7 +174,7 @@ def log_metrics(mode, step, metrics):
 
 
 if __name__ == '__main__':
-    torch.cuda.set_device(2)
+#     torch.cuda.set_device(2)
     args = parse_args()
     writer = SummaryWriter(f'log/{args.dataset}/{args.model}/ARG-{INDEX}')
 
