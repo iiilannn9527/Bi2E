@@ -93,7 +93,7 @@ class KGEModel(nn.Module):
             relation_id = head_part[:, 1]
             head = head_part[:, 0]
             tail = tail_part.view(-1)
-                                                                                                -1)
+                                                                                            
         else:
             raise ValueError('mode %s not supported' % mode)
         model_func = {
