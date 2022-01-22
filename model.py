@@ -413,34 +413,6 @@ class KGEModel(nn.Module):
 
                         print(f'{mode} : H1 = {H1:.5f}, H3 = {H3:.5f}, H10 = {H10:.5f}, MR = {MR:.5f}, MRR = {MRR:.5f}')
 
-                        if test_step % (args.valid_steps * 5) == 2:
-                            print(f'{mode:^100}')
-                            all_r = sorted(dict(r_type_count).items(), key=lambda x: x[0], reverse=False)
-                            for i in range(len(all_r)):
-                                all_r[i] = list(all_r[i])
-
-                            for j in un_shoot.keys():
-                                for i in range(len(all_r)):
-                                    all_r[i].append(all_r[i][1] - un_shoot[j][all_r[i][0]])
-                                    all_r[i].append(all_r[i][-1] / all_r[i][1])
-                            if 0 == 0:
-                                print(
-                                    "{0:^10}{1:^15}{2:^7}{3:^10}{4:^7}{5:^10}{6:^7}{7:^10}{8:^7}{9:^10}{10:^10}{11:^10}".format(
-                                        "relation", "total_number", "H1", "rate(%)", "H3", "rate(%)", "H10", "rate(%)",
-                                        "H50", "rate(%)", "MR", "MRR"))
-                                print(
-                                    "{0:^10}{1:^15}{2:^7}{3:^10.1f}{4:^7}{5:^10.1f}{6:^7}{7:^10.1f}{8:^7}{9:^10.1f}{10:^10.1f}{11:^10.5f}".format(
-                                        "***", "***", "***", H1 * 100, "***", H3 * 100, "***", H10 * 100, "***", H50 * 100,
-                                        MR, MRR))
-                                print("{0:^100}".format(' ' * 30 + "-" * 20 + " " * 30))
-                            for i in all_r:
-                                if 0 == 0:
-                                    print(
-                                        "{0:^10}{1:^15}{2:^7}{3:^10.1f}{4:^7}{5:^10.1f}{6:^7}{7:^10.1f}{8:^7}{9:^10.1f}{10:^10.1f}{11:^10.5f}".format(
-                                            i[0], i[1], i[2], i[3] * 100, i[4], i[5] * 100, i[6], i[7] * 100, i[8],
-                                                              i[9] * 100,
-                                            np.mean(rank_all[i[0]]), np.mean(1. / np.array(rank_all[i[0]]))))
-
                 h10 = np.mean(all_h10)
                 h3 = np.mean(all_h3)
                 h1 = np.mean(all_h1)
