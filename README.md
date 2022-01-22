@@ -11,7 +11,7 @@ To run the code, you need the following dependency:
 - [Pytorch 1.6.0](https://pytorch.org/)
 ## Results
 The results of **Bi2E** on **WN18RR**, **YAGO3-10** and **FB15k-237** are as follows.
-| | MR| MRR| Hits@1| Hits@3| Hits@10|
+| -| MR| MRR| Hits@1| Hits@3| Hits@10|
 |:------:|:------:|:------:|:------:|:--------:|:--------:|
 | WN18RR | 2798 | 0.480 | 0.432 | 0.498 | 0.574 | 
 | YAGO3-10 | 1496 | 0.550 | 0.468 | 0.603 | 0.697 |
