@@ -5,7 +5,7 @@ Code for paper [Bi2E: Bidirectional Knowledge Graph Embeddings Based on Subject-
 ## Setup
 These experiments are based on [RotatE](https://github.com/DeepGraphLearning/KnowledgeGraphEmbedding).
 
-Adjust the model's hyperparameters by setting [arguments.py](https://github.com/iiilannn9527/Bi2E/blob/master/arguments.py) and run in [run.py](https://github.com/iiilannn9527/Bi2E/blob/master/run.py).
+Adjust the model's hyperparameters by setting [arguments.py](https://github.com/iiilannn9527/Bi2E/blob/master/arguments.py) and  run in [run.py](https://github.com/iiilannn9527/Bi2E/blob/master/run.py).
 
 To run the code, you need the following dependency:
 - [Pytorch 1.6.0](https://pytorch.org/)
